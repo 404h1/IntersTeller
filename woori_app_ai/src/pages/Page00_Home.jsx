@@ -22,8 +22,9 @@ export default function Page00_Home({ onStart }) {
         
         {/* Top Header / Banner Area */}
         <div style={{ 
+          backgroundColor: '#e8f4fc',
           backgroundImage: `url(${homeBg})`,
-          backgroundSize: 'cover',
+          backgroundSize: '100% auto',
           backgroundPosition: 'center bottom',
           backgroundRepeat: 'no-repeat',
           padding: '16px 20px',
