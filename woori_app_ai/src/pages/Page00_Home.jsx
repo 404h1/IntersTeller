@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
-import homeBg from '../assets/home_bg.jpg';
+import homeBg from '../assets/home_bg.png';
 import botImg from '../assets/bot.png';
 import bellIcon from '../assets/bell.svg';
 import menuIcon from '../assets/menu.svg';
