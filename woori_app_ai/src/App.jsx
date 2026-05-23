@@ -24,7 +24,7 @@ export default function App() {
   const go = (p) => setPage(p);
 
   return (
-    <>
+    <div style={{ position: 'relative', width: 390, height: 844, flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
       {page === '00' && <Page00 onStart={() => go('00b')} />}
       {page === '00b' && (
         <Page00b 
@@ -80,7 +80,7 @@ export default function App() {
       {/* Floating Consulting Badge */}
       {isConsulting && page !== '00' && page !== '00b' && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           bottom: 24,
           left: 24,
           zIndex: 9999,
@@ -99,7 +99,7 @@ export default function App() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
