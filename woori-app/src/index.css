@@ -118,3 +118,18 @@ body {
   background: #fff; border-radius: 24px 24px 0 0;
   z-index: 201; padding: 28px 20px 40px;
 }
+
+@keyframes chat-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-chat-appear {
+  animation: chat-appear 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}

@@ -1,10 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import StatusBar from '../components/StatusBar';
 
 export default function Page05_InvestorCheck({ onClose }) {
   const [step, setStep] = useState(0);
   const [ans1, setAns1] = useState('');
   const [ans2, setAns2] = useState('');
+  
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    // 렌더링 후 약간의 딜레이를 주어 애니메이션이 시작될 때 스크롤이 자연스럽게 따라가도록 함
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 100);
+  }, [step]);
 
   return (
     <div className="phone-frame">
@@ -134,7 +143,7 @@ export default function Page05_InvestorCheck({ onClose }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+            <div className="animate-chat-appear" style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
               <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#e0f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🤖</div>
               <div style={{ flex: 1, background: '#f8fafc', borderRadius: '4px 16px 16px 16px', padding: '16px' }}>
                 <p style={{ fontSize: 14, color: '#222', marginBottom: 16 }}>고객님은 현재 일반금융소비자로 등록되어있습니다.</p>
@@ -176,6 +185,9 @@ export default function Page05_InvestorCheck({ onClose }) {
             </div>
           </>
         )}
+        
+        {/* 스크롤을 맨 아래로 내리기 위한 투명한 앵커 */}
+        <div ref={bottomRef} style={{ height: 10 }} />
       </div>
     </div>
   );
