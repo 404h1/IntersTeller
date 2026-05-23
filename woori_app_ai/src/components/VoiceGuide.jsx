@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useVoice } from '../context/VoiceContext';
+import botImg from '../assets/bot.png';
 
 export default function VoiceGuide({ script, onClose, onCommand, autoPlay = true }) {
   const { isPlaying, activeWordIdx, currentScript, speak, stop, replay } = useVoice();
@@ -24,6 +25,13 @@ export default function VoiceGuide({ script, onClose, onCommand, autoPlay = true
     textBoxRef.current.querySelectorAll('[data-word]')[activeWordIdx]
       ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }, [activeWordIdx, thisIsActive]);
+
+  useEffect(() => {
+    document.body.classList.add('hide-floating-badge');
+    return () => {
+      document.body.classList.remove('hide-floating-badge');
+    };
+  }, []);
 
   const handleClose = () => {
     recognRef.current?.stop();
@@ -65,7 +73,9 @@ export default function VoiceGuide({ script, onClose, onCommand, autoPlay = true
       <div onClick={handleClose} style={{ width: 36, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 14px', cursor: 'pointer' }} />
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-        <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#4899E8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🤖</div>
+        <div style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0, overflow: 'hidden' }}>
+          <img src={botImg} alt="AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: '#1b64da', marginBottom: 1 }}>내 편인 AI</div>
           <div style={{ fontSize: 11, color: '#aaa' }}>

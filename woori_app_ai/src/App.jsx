@@ -87,7 +87,7 @@ export default function App() {
 
       {/* Floating Consulting Badge */}
       {isConsulting && page !== '00' && page !== '00b' && (
-        <div style={{
+        <div className="floating-consult-badge" style={{
           position: 'absolute',
           bottom: 24,
           left: 24,

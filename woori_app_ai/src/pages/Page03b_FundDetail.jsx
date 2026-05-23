@@ -1,6 +1,7 @@
 import StatusBar from '../components/StatusBar';
 import ConsultSheet from '../components/ConsultSheet';
 import { useState } from 'react';
+import botImg from '../assets/bot.png';
 
 export default function Page03b_FundDetail({ onBack, onAI, onJoin }) {
   const [showConsult, setShowConsult] = useState(false);
@@ -79,12 +80,13 @@ export default function Page03b_FundDetail({ onBack, onAI, onJoin }) {
             </p>
           </div>
 
-          {/* AI 설명 배너 */}
           <div
             onClick={onAI}
             style={{ background: 'linear-gradient(135deg,#1b64da,#4f9cf9)', borderRadius: 14, padding: '16px 18px', marginBottom: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}
           >
-            <span style={{ fontSize: 28 }}>🤖</span>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0, overflow: 'hidden' }}>
+              <img src={botImg} alt="AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>내 편인 AI가 이 펀드를 쉽게 설명해 드릴게요</div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>장단점 · 고객님 맞춤 투자금액 추천 →</div>

@@ -164,3 +164,6 @@ body {
 
 .voice-guide-enter { animation: vgSlideUp   0.28s cubic-bezier(0.25,1,0.5,1) forwards; }
 .voice-guide-exit  { animation: vgSlideDown 0.28s cubic-bezier(0.25,1,0.5,1) forwards; }
+
+.hide-floating-badge .floating-consult-badge { display: none !important; }
+
