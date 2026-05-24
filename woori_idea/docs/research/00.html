@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리WON뱅킹 - 기존 청약 화면 (As-Is)</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f7fa; /* 첨부 이미지의 연한 배경색 */
+        }
+        .phone-container {
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+        }
+        /* 스크롤바 숨기기 (모바일 앱 느낌) */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-sm bg-[#f7f9fa] rounded-[40px] border-[8px] border-slate-200 h-[780px] relative overflow-hidden phone-container flex flex-col">
+        
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs shrink-0 z-50 text-slate-800">
+            <span class="font-bold">9:30</span>
+            <div class="flex items-center space-x-1.5 font-bold">
+                <i data-lucide="signal" class="w-3.5 h-3.5"></i>
+                <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+                <i data-lucide="battery" class="w-4 h-4"></i>
+            </div>
+        </div>
+
+        <div class="bg-white px-4 py-3 flex items-center justify-between shrink-0">
+            <button onclick="cancelFlow()" class="text-slate-700">
+                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+            </button>
+            <h1 class="font-bold text-base text-slate-800">상품가입</h1>
+            <button class="text-slate-700">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto relative flex flex-col" id="app-viewport">
+            
+            <div id="step-1" class="p-4 space-y-4 flex-1 flex flex-col animate-fade-in bg-white mt-2 mx-4 rounded-2xl shadow-sm border border-slate-100">
+                <div class="pt-2 pb-4 border-b border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 leading-snug">홍콩 H지수 연계 ELS<br>가입을 진행합니다.</h2>
+                    <p class="text-xs text-slate-500 mt-2">상품 가입을 위해 아래 약관에 동의해 주세요.</p>
+                </div>
+
+                <div class="py-2 flex items-center space-x-3">
+                    <div class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center bg-slate-50 text-slate-300" id="check-all" onclick="toggleCheckAll()">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                    </div>
+                    <span class="font-bold text-slate-800 text-sm">전체 동의합니다.</span>
+                </div>
+
+                <div class="space-y-4 pt-2">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-slate-300 mt-0.5 doc-check"></i>
+                            <div>
+                                <span class="text-xs text-slate-700 block">[필수] 예금거래기본약관</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-slate-300 mt-0.5 doc-check"></i>
+                            <div>
+                                <span class="text-xs text-slate-700 block">[필수] 투자설명서 및 핵심설명서</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-slate-300 mt-0.5 doc-check"></i>
+                            <div>
+                                <span class="text-xs text-slate-700 block">[필수] 자본시장법상 불이익 사항 고지</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-slate-300 mt-0.5 doc-check"></i>
+                            <div>
+                                <span class="text-xs text-slate-700 block">[선택] 개인정보 수집 및 이용 동의</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                    </div>
+                </div>
+
+                <div class="flex-1"></div>
+
+                <button onclick="goToStep(2)" class="w-full bg-[#4880EE] text-white py-3.5 rounded-xl text-sm font-bold mt-6">
+                    다음
+                </button>
+            </div>
+
+            <div id="step-2" class="p-4 space-y-4 flex-1 flex flex-col hidden animate-fade-in bg-white mt-2 mx-4 rounded-2xl shadow-sm border border-slate-100">
+                <div class="pt-2 pb-4 border-b border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 leading-snug">투자위험 숙지 여부 확인</h2>
+                </div>
+
+                <div class="space-y-6 pt-2">
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                            1. 본 상품은 파생결합증권으로, 기초자산의 가격 변동에 따라 <strong class="text-red-500">투자원금의 손실(0~100%)</strong>이 발생할 수 있으며, 그 손실은 투자자에게 귀속됨을 충분히 이해하셨습니까?
+                        </p>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 border border-[#4880EE] bg-[#f0f6ff] text-[#4880EE] py-2 rounded-lg text-xs font-bold">예</button>
+                            <button class="flex-1 border border-slate-200 text-slate-500 py-2 rounded-lg text-xs font-medium">아니오</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                            2. 본 상품은 예금자보호법에 따라 예금보험공사가 보호하지 않는 실적배당형 상품임을 확인하셨습니까?
+                        </p>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 border border-[#4880EE] bg-[#f0f6ff] text-[#4880EE] py-2 rounded-lg text-xs font-bold">예</button>
+                            <button class="flex-1 border border-slate-200 text-slate-500 py-2 rounded-lg text-xs font-medium">아니오</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1"></div>
+
+                <button onclick="goToStep(3)" class="w-full bg-[#4880EE] text-white py-3.5 rounded-xl text-sm font-bold mt-6">
+                    다음
+                </button>
+            </div>
+
+            <div id="step-3" class="p-4 space-y-4 flex-1 flex flex-col hidden animate-fade-in bg-white mt-2 mx-4 rounded-2xl shadow-sm border border-slate-100">
+                <div class="pt-2 pb-2">
+                    <h2 class="text-lg font-bold text-slate-900 leading-snug">가입 정보 확인</h2>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl space-y-3 border border-slate-100">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500">출금계좌</span>
+                        <span class="text-xs font-bold text-slate-800">우리 1234-567-891011</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500">가입금액</span>
+                        <span class="text-sm font-bold text-[#4880EE]">40,000,000 원</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-200">
+                        <span class="text-xs text-slate-500">투자성향</span>
+                        <span class="text-xs font-bold text-slate-800">적극투자형</span>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-500 pt-4 text-center leading-relaxed">
+                    위 내용으로 가입을 진행하시겠습니까?
+                </div>
+
+                <div class="flex-1"></div>
+
+                <button onclick="triggerSuccess()" class="w-full bg-[#4880EE] text-white py-3.5 rounded-xl text-sm font-bold mt-6 shadow-md">
+                    가입하기
+                </button>
+            </div>
+
+            <div id="step-success" class="p-6 text-center space-y-4 hidden flex-col justify-center flex-1 bg-white mt-2 mx-4 rounded-2xl shadow-sm border border-slate-100 mb-4">
+                <div class="w-16 h-16 bg-[#f0f6ff] text-[#4880EE] rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="check" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">가입이 완료되었습니다.</h3>
+                <p class="text-xs text-slate-500">홍콩 H지수 연계 ELS (40,000,000원)</p>
+                
+                <div class="flex-1"></div>
+
+                <button onclick="resetFlow()" class="w-full border border-slate-300 text-slate-700 py-3.5 rounded-xl text-sm font-bold mt-6 hover:bg-slate-50">
+                    메인으로 이동
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function goToStep(stepNum) {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`step-${i}`).classList.add('hidden');
+            }
+            document.getElementById('step-success').classList.add('hidden');
+            document.getElementById(`step-${stepNum}`).classList.remove('hidden');
+        }
+
+        // 전체 약관 동의 토글 UI 기믹
+        let isAllChecked = false;
+        function toggleCheckAll() {
+            isAllChecked = !isAllChecked;
+            const checkIcon = document.getElementById('check-all');
+            const docChecks = document.querySelectorAll('.doc-check');
+            
+            if (isAllChecked) {
+                checkIcon.classList.replace('bg-slate-50', 'bg-[#4880EE]');
+                checkIcon.classList.replace('text-slate-300', 'text-white');
+                checkIcon.classList.replace('border-slate-300', 'border-[#4880EE]');
+                docChecks.forEach(el => {
+                    el.classList.replace('text-slate-300', 'text-[#4880EE]');
+                });
+            } else {
+                checkIcon.classList.replace('bg-[#4880EE]', 'bg-slate-50');
+                checkIcon.classList.replace('text-white', 'text-slate-300');
+                checkIcon.classList.replace('border-[#4880EE]', 'border-slate-300');
+                docChecks.forEach(el => {
+                    el.classList.replace('text-[#4880EE]', 'text-slate-300');
+                });
+            }
+        }
+
+        function cancelFlow() {
+            alert("메인 화면으로 돌아갑니다.");
+            resetFlow();
+        }
+
+        function triggerSuccess() {
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('step-success').classList.remove('hidden');
+            document.getElementById('step-success').style.display = 'flex';
+        }
+
+        function resetFlow() {
+            isAllChecked = true; // 리셋 시 상태 꼬임 방지용 초기화 후 토글
+            toggleCheckAll();
+            goToStep(1);
+        }
+    </script>
+</body>
+</html>

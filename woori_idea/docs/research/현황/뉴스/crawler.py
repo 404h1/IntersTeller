@@ -6,7 +6,7 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-from config import NAVER_CLIENT_ID, NAVER_CLIENT_SECRET
+from woori_idea.docs.research.현황.뉴스.config import NAVER_CLIENT_ID, NAVER_CLIENT_SECRET
 
 
 def get_naver_news(keyword, client_id, client_secret, display=100, start=1):
@@ -103,7 +103,7 @@ def enrich_with_fulltext(df, limit=None):
 
 
 if __name__ == "__main__":
-    from config import SEARCH_KEYWORDS, MAX_NEWS_PER_KEYWORD
+    from woori_idea.docs.research.현황.뉴스.config import SEARCH_KEYWORDS, MAX_NEWS_PER_KEYWORD
 
     all_df = []
     for kw in SEARCH_KEYWORDS:
