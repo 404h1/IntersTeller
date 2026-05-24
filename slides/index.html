@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>WON AI 뱅커 — 우리은행 × SSAFY 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+
+<style>
+  :root{
+    --woori-blue:#1b64da;
+    --woori-blue-dark:#1249a3;
+    --woori-blue-300:#60a5fa;
+    --woori-blue-lite:#dbeafe;
+    --bg-grad-top:#ffffff;
+    --bg-grad-bot:#e8f2ff;
+    --gray-900:#111827;
+    --gray-700:#374151;
+    --gray-500:#6b7280;
+    --gray-400:#9ca3af;
+    --gray-300:#d1d5db;
+    --gray-200:#e5e7eb;
+    --gray-100:#f3f4f6;
+    --gray-50:#f9fafb;
+    --red:#dc2626;
+    --red-lite:#fee2e2;
+    --green:#22c55e;
+    --green-lite:#dcfce7;
+    --purple:#8b5cf6;
+    --purple-lite:#ede9fe;
+    --orange:#f59e0b;
+    --orange-lite:#fef3c7;
+  }
+  html,body{
+    margin:0; padding:0;
+    font-family:'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    background:#1a1a1a;
+    color:var(--gray-700);
+    overflow:hidden;
+    height:100vh;
+  }
+  /* 슬라이드 뷰포트 */
+  #viewport{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #stage{
+    width:1280px; height:720px;
+    transform-origin:center center;
+    position:relative;
+    background:linear-gradient(180deg, var(--bg-grad-top) 0%, var(--bg-grad-bot) 100%);
+    overflow:hidden;
+    box-shadow:0 25px 80px rgba(0,0,0,0.4);
+  }
+  .slide{
+    position:absolute; inset:0;
+    width:1280px; height:720px;
+    background:linear-gradient(180deg, var(--bg-grad-top) 0%, var(--bg-grad-bot) 100%);
+    display:none;
+    padding:0;
+    box-sizing:border-box;
+  }
+  .slide.active{display:block;}
+
+  /* 헤더 로고 */
+  .header-logo{
+    position:absolute; top:34px; left:48px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .header-logo .mark{
+    width:28px; height:28px; border-radius:50%;
+    background:var(--woori-blue);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .header-logo .mark::after{
+    content:''; width:14px; height:8px;
+    background:white; border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    transform:rotate(180deg);
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%, -30%) rotate(180deg);
+  }
+  .header-logo .name{
+    font-size:17px; font-weight:700; color:var(--gray-900);
+    letter-spacing:-0.5px;
+  }
+
+  /* 페이지 번호 */
+  .page-no{
+    position:absolute; top:38px; right:48px;
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; font-weight:700; color:var(--woori-blue);
+  }
+  .page-no .line{
+    width:36px; height:2px; background:var(--woori-blue);
+  }
+
+  /* 푸터 */
+  .footer{
+    position:absolute; bottom:30px; left:48px;
+    font-size:11px; color:var(--gray-400);
+    letter-spacing:1px;
+  }
+  .footer-bar{
+    position:absolute; bottom:32px; right:48px;
+    display:flex; align-items:flex-end; gap:3px;
+  }
+  .footer-bar div{
+    width:10px; border-radius:2px; background:var(--woori-blue-300);
+  }
+
+  /* 챕터 라벨 */
+  .chapter-label{
+    position:absolute; top:120px; left:64px;
+    font-size:12px; font-weight:700; color:var(--woori-blue);
+    letter-spacing:0.8px;
+  }
+  .chapter-label::before{
+    content:'●'; margin-right:6px;
+  }
+
+  /* 헤드라인 영역 */
+  .headline{
+    position:absolute;
+    font-size:46px; font-weight:800;
+    color:var(--gray-900);
+    line-height:1.25; letter-spacing:-1px;
+  }
+  .headline .accent{color:var(--woori-blue);}
+  .headline .red{color:var(--red);}
+
+  .underline{
+    width:48px; height:3px; background:var(--woori-blue);
+    border-radius:2px;
+  }
+
+  .lead-text{
+    font-size:14px; color:var(--gray-500);
+    line-height:1.8; letter-spacing:-0.2px;
+  }
+
+  /* 카드 공통 */
+  .card{
+    background:white;
+    border-radius:14px;
+    border:1px solid var(--gray-200);
+    box-shadow:0 4px 16px rgba(30,80,170,0.06);
+    padding:20px;
+    position:relative;
+  }
+
+  /* 아이콘 박스 */
+  .icon-box{
+    width:48px; height:48px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px;
+  }
+  .icon-box.blue{background:var(--woori-blue-lite); color:var(--woori-blue);}
+  .icon-box.green{background:var(--green-lite); color:var(--green);}
+  .icon-box.purple{background:var(--purple-lite); color:var(--purple);}
+  .icon-box.orange{background:var(--orange-lite); color:var(--orange);}
+  .icon-box.red{background:var(--red-lite); color:var(--red);}
+
+  /* 동그란 큰 아이콘 */
+  .icon-circle{
+    width:60px; height:60px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px;
+    flex-shrink:0;
+  }
+  .icon-circle.blue{background:var(--woori-blue-lite); color:var(--woori-blue);}
+  .icon-circle.green{background:var(--green-lite); color:var(--green);}
+  .icon-circle.purple{background:var(--purple-lite); color:var(--purple);}
+  .icon-circle.orange{background:var(--orange-lite); color:var(--orange);}
+  .icon-circle.red{background:var(--red-lite); color:var(--red);}
+
+  /* 체크 아이템 */
+  .check{
+    display:flex; align-items:center; gap:8px;
+    font-size:11px; color:var(--gray-500);
+    margin-bottom:5px;
+  }
+  .check::before{
+    content:'✓';
+    display:flex; align-items:center; justify-content:center;
+    width:14px; height:14px; border-radius:50%;
+    background:var(--woori-blue);
+    color:white;
+    font-size:9px; font-weight:700;
+    flex-shrink:0;
+  }
+
+  /* 점선 구분 */
+  .divider-dotted{
+    border-top:1.5px dotted var(--gray-300);
+    margin:10px 0;
+  }
+
+  /* 화살표 */
+  .arrow-right{
+    font-size:24px; color:var(--woori-blue);
+    font-weight:300;
+  }
+
+  /* 도움말 컨트롤 */
+  .controls{
+    position:fixed; bottom:20px; left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,0.7);
+    color:white;
+    padding:10px 20px;
+    border-radius:24px;
+    font-size:13px;
+    display:flex; gap:16px;
+    z-index:1000;
+    opacity:0; transition:opacity 0.3s;
+  }
+  .controls.show{opacity:1;}
+  .controls .key{
+    background:rgba(255,255,255,0.15);
+    padding:3px 8px; border-radius:6px;
+    font-family:monospace;
+  }
+
+  .page-indicator{
+    position:fixed; top:20px; right:30px;
+    background:rgba(0,0,0,0.7);
+    color:white;
+    padding:6px 14px;
+    border-radius:14px;
+    font-size:13px;
+    z-index:1000;
+    font-weight:600;
+  }
+
+  /* 폰 미리보기 */
+  .phone-frame{
+    background:white;
+    border:1.5px solid var(--gray-200);
+    border-radius:24px;
+    box-shadow:0 12px 30px rgba(20,60,150,0.15);
+    overflow:hidden;
+  }
+
+  /* 도시 실루엣 효과용 */
+  .city-deco{
+    position:absolute; bottom:0; left:0;
+    width:680px; height:160px;
+    background:url('assets/city_silhouette.png') no-repeat bottom left;
+    background-size:contain;
+    opacity:0.4;
+    pointer-events:none;
+  }
+
+  /* 캐릭터 */
+  .characters{
+    position:absolute;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-indicator"><span id="page-current">1</span> / 15</div>
+<div class="controls" id="controls">
+  <span><span class="key">←</span> <span class="key">→</span> 이동</span>
+  <span><span class="key">F</span> 전체화면</span>
+  <span><span class="key">Esc</span> 종료</span>
+</div>
+
+<div id="viewport">
+<div id="stage">
+
+<!-- ════════════════════════════════════════════════
+SLIDE 01 — 표지
+════════════════════════════════════════════════ -->
+<section class="slide active" data-slide="1">
+  <div class="header-logo">
+    <div class="mark"></div>
+    <div class="name">우리은행</div>
+  </div>
+
+  <div style="position:absolute; top:148px; left:64px;">
+    <div style="font-size:14px; color:var(--gray-500); margin-bottom:6px;">
+      옆자리 행원이 사라진 시대,
+      <span style="color:var(--woori-blue); font-weight:700;">불완전판매 예방 AI</span>
+    </div>
+  </div>
+
+  <h1 class="headline" style="top:200px; left:64px; font-size:60px; line-height:1.2;">
+    옆에 행원이 없으면,<br>
+    <span class="accent">우리</span>의 다음 클릭이<br>
+    위험합니다.
+  </h1>
+
+  <div class="underline" style="position:absolute; top:480px; left:64px; width:56px; height:4px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:500px; left:64px; width:620px;">
+    WON AI 뱅커는 마이데이터 기반 개인화 경고와<br>
+    음성 안내로, 사라진 옆자리 행원의 역할을<br>
+    디지털에 다시 앉힙니다.
+  </div>
+
+  <!-- 우측 폰 미리보기 (실제 가이드 jpg에서 잘라온 이미지) -->
+  <div style="position:absolute; top:120px; right:60px; width:480px; height:420px;">
+    <img src="assets/phones_preview.png" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 16px 32px rgba(20,60,150,0.18));">
+  </div>
+
+  <!-- 우하단 캐릭터 -->
+  <div class="characters" style="bottom:40px; right:40px; width:200px;">
+    <img src="assets/bee_big.png" style="width:100%; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.1));">
+  </div>
+
+  <div class="footer">
+    우리은행 × SSAFY AI-금융소비자보호 아이디어 경진대회 2026  ·  팀 [팀명]
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 02 — Scene: 사라진 옆자리
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="2">
+  <div class="header-logo">
+    <div class="mark"></div>
+    <div class="name">우리은행</div>
+  </div>
+  <div class="page-no">02<div class="line"></div></div>
+
+  <div class="chapter-label" style="top:120px;">SCENE 01</div>
+
+  <h1 class="headline" style="top:170px; left:64px; font-size:60px; line-height:1.2;">
+    5년 사이,<br>
+    동네 은행이 <span class="accent">사라졌습니다.</span>
+  </h1>
+
+  <div class="underline" style="position:absolute; top:440px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:460px; left:64px; width:640px;">
+    노년층 요구는 단순 잔액조회가 아닙니다.<br>
+    연금 수령, 병원비 이체, 정기지출 설정 같은<br>
+    일상 밀착형 금융 — 점포 사라지면 곧 금융 접근권 차단.
+  </div>
+
+  <div style="position:absolute; bottom:80px; left:64px; font-size:11px; color:var(--gray-400);">
+    출처. 한국경제 「은행 점포 폐쇄 가속, 작년 100개 넘게 줄었다」 (2026.01)
+  </div>
+
+  <!-- 우측 큰 숫자 카드 -->
+  <div class="card" style="position:absolute; top:170px; right:64px; width:440px; height:480px; padding:32px;">
+    <div style="text-align:center; font-size:14px; font-weight:700; color:var(--gray-700); margin-bottom:8px;">
+      최근 5년 은행 점포 변화
+    </div>
+    <div style="text-align:center; font-size:140px; font-weight:900; color:var(--woori-blue); line-height:1; margin:20px 0;">
+      904
+    </div>
+    <div style="text-align:center; font-size:20px; font-weight:700; color:var(--gray-900); margin-bottom:24px;">
+      개 폐쇄  ·  -14.1%
+    </div>
+    <div class="divider-dotted"></div>
+
+    <div style="margin-top:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-size:11px; color:var(--gray-500);">2020년 말</span>
+        <span style="font-size:18px; font-weight:700; color:var(--gray-700);">6,427개</span>
+      </div>
+      <div style="height:24px; background:var(--woori-blue-lite); border-radius:4px; width:100%;"></div>
+    </div>
+    <div style="margin-top:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-size:11px; color:var(--gray-500);">2025년 9월</span>
+        <span style="font-size:18px; font-weight:700; color:var(--red);">5,523개</span>
+      </div>
+      <div style="height:24px; background:var(--red); border-radius:4px; width:86%;"></div>
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div>
+    <div style="height:18px;"></div>
+    <div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 03 — 70대 디지털 절벽 (2x2 카드)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="3">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">03<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px;">PROBLEM 01 · 디지털 격차</div>
+
+  <h1 class="headline" style="top:170px; left:64px; font-size:42px; line-height:1.3; width:560px;">
+    60대는 <span class="accent">카톡</span>을 합니다.<br>
+    70대는 <span class="red">인터넷</span>을 못 합니다.
+  </h1>
+
+  <div class="underline" style="position:absolute; top:330px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:350px; left:64px; width:560px;">
+    같은 "고령층" 안에 거대한 절벽이 있습니다.<br>
+    KISDI 2024에서 70대 인터넷 활용은 <strong style="color:var(--red);">1.85점/5점</strong>, 거의 낙제.<br><br>
+    그런데도 <strong style="color:var(--woori-blue); font-size:16px;">65세 이상 38%</strong>가
+    "은행앱 쓰고 싶다"고 답했습니다.<br>
+    <span style="color:var(--gray-700); font-weight:600;">수요는 있는데, 진입을 못 합니다.</span>
+  </div>
+
+  <div style="position:absolute; bottom:80px; left:64px; font-size:11px; color:var(--gray-400);">
+    출처. KISDI 한국미디어패널조사 2024 · 국제신문 2025.10
+  </div>
+
+  <!-- 우측 2x2 카드 -->
+  <div style="position:absolute; top:130px; right:64px; width:540px;">
+    <div style="font-size:14px; font-weight:700; color:var(--gray-900); margin-bottom:6px; display:flex; align-items:center; gap:10px;">
+      우리가 본 디지털 절벽
+      <div style="flex:1; height:1px; background:var(--gray-200);"></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;">
+      <!-- 카드 1 -->
+      <div class="card" style="padding:18px;">
+        <div class="icon-box blue">📱</div>
+        <div style="font-size:15px; font-weight:700; color:var(--woori-blue); margin-top:14px;">메신저 격차</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          60대 4.23점 — 국민 평균<br>70대 1점대 — 낙제
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">60대는 카톡·문자 OK</div>
+        <div class="check">70대는 통화 위주</div>
+        <div class="check">KISDI 2024</div>
+      </div>
+
+      <!-- 카드 2 -->
+      <div class="card" style="padding:18px;">
+        <div class="icon-box red">🌐</div>
+        <div style="font-size:15px; font-weight:700; color:var(--red); margin-top:14px;">인터넷 격차</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          60대 3.39 → 70대 1.85<br>격차 1.54점 (절벽)
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">단순 검색도 어려움</div>
+        <div class="check">뉴스·정보 차단</div>
+        <div class="check">온라인 일상 불가</div>
+      </div>
+
+      <!-- 카드 3 -->
+      <div class="card" style="padding:18px;">
+        <div class="icon-box orange">💰</div>
+        <div style="font-size:15px; font-weight:700; color:var(--orange); margin-top:14px;">금융앱 격차</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          모바일뱅킹 실사용<br>60대 약 30% · 70대 한자릿수
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">가입 ≠ 실사용</div>
+        <div class="check">진입 단계서 포기</div>
+        <div class="check">갤럽 2025</div>
+      </div>
+
+      <!-- 카드 4 -->
+      <div class="card" style="padding:18px;">
+        <div class="icon-box green">💬</div>
+        <div style="font-size:15px; font-weight:700; color:var(--green); margin-top:14px;">욕구는 있다</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          65세 이상 38%<br>"은행앱 쓰고 싶다"
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">수요는 분명</div>
+        <div class="check">진입을 못 할 뿐</div>
+        <div class="check">국제신문 2025</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 04 — 4단계 진입 장벽 (1x4)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="4">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">04<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px;">PROBLEM 02 · 진입 장벽</div>
+
+  <h1 class="headline" style="top:170px; left:64px; font-size:48px; line-height:1.25;">
+    네 단계 <span class="red">모두</span>에서<br>
+    막힙니다.
+  </h1>
+
+  <div class="underline" style="position:absolute; top:340px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:360px; left:64px; width:520px;">
+    쓸 줄 모르는 게 문제가 아닙니다.<br>
+    진입 단계마다 함정이 있고, 그 함정을 통과한<br>
+    사람만 "쉬운 모드"를 만날 수 있습니다.
+  </div>
+
+  <!-- 좌하단 말풍선 -->
+  <div style="position:absolute; bottom:70px; left:64px; width:520px;
+              background:white; border:1px solid var(--woori-blue-lite); border-radius:14px;
+              padding:16px; display:flex; gap:14px; align-items:center;
+              box-shadow:0 4px 12px rgba(30,80,170,0.06);">
+    <div style="width:40px; height:40px; border-radius:50%; background:var(--woori-blue);
+                display:flex; align-items:center; justify-content:center; flex-shrink:0;
+                font-size:18px;">💡</div>
+    <div>
+      <div style="font-size:13px; font-weight:700; color:var(--woori-blue);">결정적 한계</div>
+      <div style="font-size:13px; font-weight:600; color:var(--gray-900); margin-top:3px;">
+        "쉬운 모드도 도달해야 쓸 수 있다."
+      </div>
+    </div>
+  </div>
+
+  <!-- 우측 1x4 카드 -->
+  <div style="position:absolute; top:130px; right:64px; width:560px;">
+    <div style="font-size:14px; font-weight:700; color:var(--gray-900); margin-bottom:6px; display:flex; align-items:center; gap:10px;">
+      ● 단계별로 어디서 막히는가
+      <div style="flex:1; height:1px; background:var(--gray-200);"></div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle blue">01</div>
+        <div style="flex:1;">
+          <div style="font-size:10px; font-weight:700; color:var(--woori-blue); margin-bottom:2px;">01</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">진입 자체</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            "쉬운 모드"를 켜려면 먼저 앱 설치 + 본인인증 + 로그인을 통과해야 합니다.
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--woori-blue);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle purple">02</div>
+        <div style="flex:1;">
+          <div style="font-size:10px; font-weight:700; color:var(--purple); margin-bottom:2px;">02</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">인증 함정</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            OTP는 공동인증서로, 공동인증서는 OTP로 풀어야 하는 무한루프. 셀카 인증 실패도 빈번.
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--purple);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle orange">03</div>
+        <div style="flex:1;">
+          <div style="font-size:10px; font-weight:700; color:var(--orange); margin-bottom:2px;">03</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">화면 오인지</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            화살표 클릭 가능 인지 못 함 · 스크롤 모름 · 예시를 본인 데이터로 오해 (Toss UX).
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--orange);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle red">04</div>
+        <div style="flex:1;">
+          <div style="font-size:10px; font-weight:700; color:var(--red); margin-bottom:2px;">04</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">사기 노출</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            진입은 못해도 송금은 함. 60대 보이스피싱 4.6배 폭증, 펀드 불완전판매 민원 30%.
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--red);">›</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 05 — 사기 + 불완전판매 (3 박스 + 인용)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="5">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">05<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px;">PROBLEM 03 · 피해의 무게</div>
+
+  <h1 class="headline" style="top:165px; left:64px; font-size:42px;">
+    숫자가 말해주는 <span class="accent">피해 구조</span>
+  </h1>
+
+  <div class="underline" style="position:absolute; top:235px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:253px; left:64px;">
+    시니어·취약계층이 집중 타격을 받습니다.
+  </div>
+
+  <!-- 3개 큰 숫자 박스 -->
+  <div style="position:absolute; top:310px; left:64px; right:64px;
+              display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px;">
+
+    <div class="card" style="padding:24px; text-align:center;">
+      <div style="font-size:64px; font-weight:900; color:var(--woori-blue); line-height:1;">
+        30<span style="font-size:24px; font-weight:700;">%</span>
+      </div>
+      <div style="font-size:13px; color:var(--gray-700); margin-top:14px; line-height:1.5;">
+        펀드 불완전판매 민원<br>60세 이상 비중
+      </div>
+      <div class="divider-dotted"></div>
+      <div style="text-align:left; padding-top:4px;">
+        <div class="check">은행 31.7% / 증권사 32.1%</div>
+        <div class="check">인구 비중보다 훨씬 높음</div>
+        <div class="check">금소법 사각지대</div>
+      </div>
+      <div style="font-size:9px; color:var(--gray-400); text-align:center; margin-top:8px;">출처: 금감원</div>
+    </div>
+
+    <div class="card" style="padding:24px; text-align:center;">
+      <div style="font-size:64px; font-weight:900; color:var(--red); line-height:1;">
+        4.6<span style="font-size:24px; font-weight:700;">배</span>
+      </div>
+      <div style="font-size:13px; color:var(--gray-700); margin-top:14px; line-height:1.5;">
+        60대 보이스피싱 폭증<br>2016 → 2025 (10년)
+      </div>
+      <div class="divider-dotted"></div>
+      <div style="text-align:left; padding-top:4px;">
+        <div class="check">2016년 1,261건 → 2025년 5,801건</div>
+        <div class="check">2025 상반기 비중 30.6%</div>
+        <div class="check">시니어 집중 타깃화</div>
+      </div>
+      <div style="font-size:9px; color:var(--gray-400); text-align:center; margin-top:8px;">출처: 경찰청</div>
+    </div>
+
+    <div class="card" style="padding:24px; text-align:center;">
+      <div style="font-size:54px; font-weight:900; color:var(--purple); line-height:1;">
+        8,856<span style="font-size:20px; font-weight:700;">억</span>
+      </div>
+      <div style="font-size:13px; color:var(--gray-700); margin-top:14px; line-height:1.5;">
+        2025년 8월 누적 피해액<br>역대 최고치
+      </div>
+      <div class="divider-dotted"></div>
+      <div style="text-align:left; padding-top:4px;">
+        <div class="check">2023년 4,472억 → 2025 폭증</div>
+        <div class="check">AI 딥페이크 사기 영향</div>
+        <div class="check">평균 피해액도 증가</div>
+      </div>
+      <div style="font-size:9px; color:var(--gray-400); text-align:center; margin-top:8px;">출처: 금감원</div>
+    </div>
+
+  </div>
+
+  <!-- 하단 빨간 인용 박스 -->
+  <div style="position:absolute; bottom:64px; left:64px; right:64px;
+              background:var(--red-lite); border:1.5px solid var(--red);
+              border-radius:12px; padding:14px 20px;">
+    <span style="font-size:13px; font-weight:700; color:var(--red);">⚠ AI 음성·딥페이크 진화</span>
+    <span style="font-size:12px; color:var(--gray-700);">
+      &nbsp;&nbsp;— 30초 음성만으로 가족 목소리 복제. 2025년 서울 직장인은 '아들 얼굴' 딥페이크 영상통화에
+      <strong style="color:var(--red);">5,000만원 송금.</strong>
+      시니어는 "딥페이크" 개념 자체를 모릅니다.
+    </span>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 06 — 은행도 노력 중인데… (좌 노력 / 우 한계)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="6">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">06<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px;">PROBLEM 04 · 기존 대응의 한계</div>
+
+  <h1 class="headline" style="top:170px; left:64px; font-size:44px; line-height:1.25;">
+    은행도 <span class="accent">가만히</span> 있진 않았습니다.<br>
+    그런데 <span class="red">충분하지 않습니다.</span>
+  </h1>
+
+  <div class="underline" style="position:absolute; top:380px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:400px; left:64px; width:520px;">
+    가이드라인은 "방향"만 제시했고,<br>
+    실제 구현은 "글자 크기 키우기"에 머물렀습니다.<br><br>
+    결정적으로, 그 "쉬운 모드"는<br>
+    <strong style="color:var(--gray-900);">진입을 통과한 사람만 만날 수 있습니다.</strong>
+  </div>
+
+  <!-- 우측 위: 노력 -->
+  <div class="card" style="position:absolute; top:150px; right:64px; width:520px; padding:22px;">
+    <div style="font-size:15px; font-weight:700; color:var(--gray-900); margin-bottom:14px;">
+      ✅ 은행권이 시도한 대응
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div class="check" style="font-size:13px;">4대 은행 모두 "고령자 모드" 출시 (2023)</div>
+      <div class="check" style="font-size:13px;">우리은행 시니어플러스 영업점 · 사랑채 운영</div>
+      <div class="check" style="font-size:13px;">카카오뱅크 · 토스 "간편홈" 도입</div>
+      <div class="check" style="font-size:13px;">금융위 "고령자 친화적 앱 구성지침" (2022)</div>
+      <div class="check" style="font-size:13px;">한도제한계좌 · 지급정지 · 안심차단 인프라</div>
+    </div>
+  </div>
+
+  <!-- 우측 아래: 한계 -->
+  <div style="position:absolute; bottom:64px; right:64px; width:520px;
+              background:var(--red-lite); border:1.5px solid var(--red);
+              border-radius:14px; padding:22px;">
+    <div style="font-size:13px; font-weight:700; color:var(--red); margin-bottom:10px;">
+      ⚠ 그런데, 한 기사 제목이 모든 걸 말합니다
+    </div>
+    <div style="font-size:22px; font-weight:800; color:var(--gray-900); line-height:1.3;">
+      "고령자 모드 있다지만,<br>쉬운 금융은 없었다."
+    </div>
+    <div style="font-size:11px; color:var(--gray-500); margin-top:8px;">
+      — 브라보마이라이프, 4대 은행 앱 조사 (2025)
+    </div>
+    <div style="border-top:1px dotted var(--red); margin:14px 0 10px;"></div>
+    <div style="font-size:13px; font-weight:700; color:var(--red);">
+      쉬운 모드도 "도달해야" 쓸 수 있다 → 진입 차단
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 07 — 솔루션 등장
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="7">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">07<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px;">SOLUTION · 옆자리 행원의 귀환</div>
+
+  <div style="position:absolute; top:200px; left:0; right:0; text-align:center;">
+    <div style="font-size:22px; color:var(--gray-500); margin-bottom:24px;">
+      그래서 저희는 ─
+    </div>
+    <div style="font-size:96px; font-weight:900; color:var(--woori-blue); line-height:1; letter-spacing:-3px;">
+      WON AI 뱅커
+    </div>
+    <div style="font-size:24px; color:var(--gray-700); margin-top:32px;">
+      사라진 옆자리에 다시 앉습니다.
+    </div>
+
+    <div style="margin-top:60px; font-size:24px; font-weight:800; line-height:1.6;">
+      <div style="color:var(--gray-900);">권유하지 않습니다.</div>
+      <div style="color:var(--woori-blue);">같이 고민합니다.</div>
+      <div style="color:var(--gray-900);">끝까지 함께합니다.</div>
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 08 — 4가지 약속 (가이드2 정확 카피)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="8">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">08<div class="line"></div></div>
+
+  <h1 class="headline" style="top:130px; left:64px; font-size:44px; line-height:1.25; width:520px;">
+    더 나은 금융을 위한,<br>
+    <span class="accent">우리</span>의 약속
+  </h1>
+
+  <div class="underline" style="position:absolute; top:310px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:330px; left:64px; width:520px;">
+    우리는 고객 한 분 한 분의 일상에<br>
+    더 가까이 다가가, 더 편리하고 안전한 금융 경험을<br>
+    제공하기 위해 노력하고 있습니다.<br><br>
+    기술과 신뢰를 바탕으로,<br>
+    당신의 내일을 함께 만들어갑니다.
+  </div>
+
+  <!-- 좌하단 캐릭터들 (가이드 jpg에서 잘라온 이미지) -->
+  <div class="characters" style="bottom:0; left:0; width:540px;">
+    <img src="assets/characters_4.png" style="width:100%; opacity:0.95;">
+  </div>
+
+  <!-- 우측 2x2 카드 -->
+  <div style="position:absolute; top:130px; right:64px; width:560px;">
+    <div style="font-size:14px; font-weight:700; color:var(--gray-900); margin-bottom:6px; display:flex; align-items:center; gap:10px;">
+      우리가 만드는 변화
+      <div style="flex:1; height:1px; background:var(--gray-200);"></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;">
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box blue">🛡</div>
+        <div style="font-size:15px; font-weight:700; color:var(--woori-blue); margin-top:14px;">안전한 금융</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          마이데이터 기반 개인화 경고와<br>사전 차단으로 손실 예방
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">신용대출·자동이체 인용 경고</div>
+        <div class="check">딥페이크 송금 차단</div>
+        <div class="check">한도제한 + AI 보조</div>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box blue">📱</div>
+        <div style="font-size:15px; font-weight:700; color:var(--woori-blue); margin-top:14px;">편리한 금융</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          음성과 단계별 동행으로<br>진입 단계부터 풀어드립니다
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">음성 우선 인터페이스</div>
+        <div class="check">인증 단계 동행 안내</div>
+        <div class="check">한 번의 동의 · 끝까지</div>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box blue">👥</div>
+        <div style="font-size:15px; font-weight:700; color:var(--woori-blue); margin-top:14px;">고객 중심 금융</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          같이 고민하는 옆자리 행원,<br>결정은 항상 고객 본인
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">"잠깐만요" 3단계 경고</div>
+        <div class="check">결과 강요 X · 선택지 동등</div>
+        <div class="check">고령자 페르소나 토글</div>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box blue">🌱</div>
+        <div style="font-size:15px; font-weight:700; color:var(--woori-blue); margin-top:14px;">함께 성장하는 금융</div>
+        <div style="font-size:11px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          시니어·청년·첫 투자자까지<br>모두를 위한 보호망
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">시니어플러스 점포 연계</div>
+        <div class="check">청년 첫 투자자 보호</div>
+        <div class="check">금감원 가이드라인 반영</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 09 — 우리의 약속으로 (가이드3 정확 카피)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="9">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">09<div class="line"></div></div>
+
+  <h1 class="headline" style="top:115px; left:64px; font-size:48px; line-height:1.3; width:580px;">
+    <span class="accent">우리</span>의 약속으로<br>
+    더 나은 금융을 만듭니다
+  </h1>
+
+  <div class="underline" style="position:absolute; top:300px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:320px; left:64px; width:560px;">
+    우리는 고객의 신뢰를 최우선으로 생각하며,<br>
+    안전하고 편리한 금융 서비스를 통해<br>
+    모두가 함께 성장하는 내일을 만들어갑니다.
+  </div>
+
+  <!-- 좌하단 캐릭터 + 도시 -->
+  <div class="characters" style="bottom:40px; left:0; width:580px;">
+    <img src="assets/characters_3.png" style="width:100%; opacity:0.95;">
+  </div>
+
+  <!-- 우측 1x4 카드 -->
+  <div style="position:absolute; top:115px; right:64px; width:560px;">
+    <div style="font-size:14px; font-weight:700; color:var(--gray-900); margin-bottom:6px; display:flex; align-items:center; gap:10px;">
+      ● WON AI 뱅커가 만들어낼 변화
+      <div style="flex:1; height:1px; background:var(--gray-200);"></div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle blue">🛡</div>
+        <div style="flex:1;">
+          <div style="font-size:11px; font-weight:700; color:var(--woori-blue); margin-bottom:2px;">01</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">신뢰할 수 있는 금융</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            본인 마이데이터 인용 경고 · 출처가 분명한 사전 차단
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--woori-blue);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle green">📱</div>
+        <div style="flex:1;">
+          <div style="font-size:11px; font-weight:700; color:var(--green); margin-bottom:2px;">02</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">언제 어디서나 편리한 금융</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            음성·텍스트·시각 멀티모달 · 진입 단계부터 동행
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--green);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle purple">👥</div>
+        <div style="flex:1;">
+          <div style="font-size:11px; font-weight:700; color:var(--purple); margin-bottom:2px;">03</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">고객 중심의 금융</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            선택지 동등 노출 · 결과 강요 X · 결정은 고객 본인
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--purple);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle blue">🌱</div>
+        <div style="flex:1;">
+          <div style="font-size:11px; font-weight:700; color:var(--woori-blue); margin-bottom:2px;">04</div>
+          <div style="font-size:15px; font-weight:700; color:var(--gray-900);">함께 성장하는 금융</div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:3px;">
+            시니어 · 청년 · 첫 투자자 · 모든 세대 보호망
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--woori-blue);">›</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 10 — 기존 vs 우리 (비교표)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="10">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">10<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px;">DIFFERENCE · 기존 vs 우리</div>
+
+  <h1 class="headline" style="top:165px; left:64px; font-size:40px;">
+    다섯 영역, <span class="accent">모두</span> 다르게 합니다.
+  </h1>
+
+  <div class="underline" style="position:absolute; top:235px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:253px; left:64px;">
+    옆자리 행원의 역할을, 디지털 환경에 그대로 옮겼습니다.
+  </div>
+
+  <!-- 비교 표 -->
+  <table style="position:absolute; top:320px; left:64px; right:64px;
+                border-collapse:separate; border-spacing:0;
+                font-size:14px; width:calc(100% - 128px);">
+    <thead>
+      <tr style="background:var(--gray-900); color:white;">
+        <th style="padding:14px 18px; text-align:left; font-weight:700; width:18%; border-radius:8px 0 0 0;">항목</th>
+        <th style="padding:14px 18px; text-align:left; font-weight:700; width:40%;">기존 은행앱 · 고령자 모드</th>
+        <th style="padding:14px 18px; text-align:left; font-weight:700; width:42%; border-radius:0 8px 0 0;">WON AI 뱅커</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:14px 18px; background:var(--gray-100); font-weight:700; color:var(--gray-900);">진입</td>
+        <td style="padding:14px 18px; background:white; color:var(--gray-500); border-bottom:1px solid var(--gray-200);">앱 설치 + 본인인증 + 로그인 통과 후</td>
+        <td style="padding:14px 18px; background:var(--woori-blue-lite); color:var(--woori-blue-dark); font-weight:700;">첫 화면에서 바로 (음성 우선)</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 18px; background:var(--gray-100); font-weight:700; color:var(--gray-900);">안내</td>
+        <td style="padding:14px 18px; background:white; color:var(--gray-500); border-bottom:1px solid var(--gray-200);">글자만 큰 동일 화면</td>
+        <td style="padding:14px 18px; background:var(--woori-blue-lite); color:var(--woori-blue-dark); font-weight:700;">음성 + 단계별 동행 · 단어 하이라이트</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 18px; background:var(--gray-100); font-weight:700; color:var(--gray-900);">경고</td>
+        <td style="padding:14px 18px; background:white; color:var(--gray-500); border-bottom:1px solid var(--gray-200);">"원금손실 위험" 한 줄</td>
+        <td style="padding:14px 18px; background:var(--woori-blue-lite); color:var(--woori-blue-dark); font-weight:700;">본인 데이터 인용 · 3단계 사전 경고</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 18px; background:var(--gray-100); font-weight:700; color:var(--gray-900);">사기 차단</td>
+        <td style="padding:14px 18px; background:white; color:var(--gray-500); border-bottom:1px solid var(--gray-200);">송금 직전 차단 없음</td>
+        <td style="padding:14px 18px; background:var(--woori-blue-lite); color:var(--woori-blue-dark); font-weight:700;">가족 송금 · 과소비 패턴 자동 탐지</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 18px; background:var(--gray-100); font-weight:700; color:var(--gray-900); border-radius:0 0 0 8px;">시니어</td>
+        <td style="padding:14px 18px; background:white; color:var(--gray-500);">별도 영업점 (오프라인)</td>
+        <td style="padding:14px 18px; background:var(--woori-blue-lite); color:var(--woori-blue-dark); font-weight:700; border-radius:0 0 8px 0;">모바일에서도 행원 경험 · 페르소나 토글</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="position:absolute; bottom:70px; left:0; right:0; text-align:center;
+              font-size:15px; font-weight:700; color:var(--woori-blue);">
+    💬 옆자리 행원의 역할을, 그대로 디지털에 옮겼습니다.
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 11 — 데모 ① 김영자(72)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="11">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">11<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px; color:var(--orange);">DEMO 01 · 시니어 시나리오</div>
+
+  <div style="position:absolute; top:160px; left:64px;">
+    <span style="font-size:34px; font-weight:800; color:var(--gray-900);">🧓 김영자 (72)</span>
+    <span style="font-size:18px; color:var(--gray-500); margin-left:10px;">— 은퇴 교사</span>
+  </div>
+
+  <div style="position:absolute; top:215px; left:64px; font-size:15px; color:var(--gray-500);">
+    노후자금 8,000만원, 첫 펀드 가입을 고민 중
+  </div>
+
+  <div class="underline" style="position:absolute; top:265px; left:64px; background:var(--orange);"></div>
+
+  <!-- 좌측 페르소나 카드 -->
+  <div class="card" style="position:absolute; top:290px; left:64px; width:540px; padding:24px;">
+    <div style="font-size:14px; font-weight:700; color:var(--orange); margin-bottom:10px;">📊 마이데이터</div>
+    <div class="divider-dotted"></div>
+    <table style="width:100%; font-size:13px; margin-top:6px;">
+      <tr><td style="padding:7px 0; color:var(--gray-500); width:40%;">나이</td><td style="font-weight:700; color:var(--gray-900);">72세 · 은퇴 교사</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">우리은행 이용</td><td style="font-weight:700; color:var(--gray-900);">30년 단골</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">보유 자산</td><td style="font-weight:700; color:var(--gray-900);">노후자금 8,000만원</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">대출</td><td style="font-weight:700; color:var(--gray-900);">없음</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">투자 경험</td><td style="font-weight:700; color:var(--gray-900);">없음 (첫 펀드)</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">검토 펀드</td><td style="font-weight:700; color:var(--gray-900);">삼성 글로벌 반도체 A-e</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">투자 예정</td><td style="font-weight:700; color:var(--red);">2,000만원 (자산의 25%)</td></tr>
+    </table>
+  </div>
+
+  <!-- 우측 영상 + 결과 -->
+  <div style="position:absolute; top:160px; right:64px; width:580px;">
+    <div style="background:#1f2937; border:3px solid var(--orange); border-radius:14px;
+                height:400px; display:flex; align-items:center; justify-content:center;
+                position:relative;">
+      <div style="width:100px; height:100px; border-radius:50%; background:var(--orange);
+                  display:flex; align-items:center; justify-content:center;
+                  font-size:36px; color:white;">▶</div>
+      <div style="position:absolute; bottom:14px; left:0; right:0; text-align:center;
+                  font-size:12px; color:rgba(255,255,255,0.6);">
+        [ 김영자 시나리오 영상 — 약 60초 ]
+      </div>
+    </div>
+    <div style="margin-top:14px; background:var(--orange-lite); border:1px solid var(--orange);
+                border-radius:12px; padding:14px;">
+      <div style="font-size:12px; font-weight:700; color:var(--orange); margin-bottom:4px;">
+        ✅ 예상 결과
+      </div>
+      <div style="font-size:13px; color:var(--gray-700);">
+        AI 경고 → '다시 생각해볼게요' 선택 → 원금보장형 분기 · 손실 0원
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 12 — 데모 ② 이혜원(28)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="12">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">12<div class="line"></div></div>
+  <div class="chapter-label" style="top:120px; color:var(--woori-blue);">DEMO 02 · 청년 시나리오</div>
+
+  <div style="position:absolute; top:160px; left:64px;">
+    <span style="font-size:34px; font-weight:800; color:var(--gray-900);">👩 이혜원 (28)</span>
+    <span style="font-size:18px; color:var(--gray-500); margin-left:10px;">— 직장 3년차</span>
+  </div>
+
+  <div style="position:absolute; top:215px; left:64px; font-size:15px; color:var(--gray-500);">
+    월급 265만, 신용대출 3,000만, 카드값 6/5 결제 예정
+  </div>
+
+  <div class="underline" style="position:absolute; top:265px; left:64px;"></div>
+
+  <!-- 좌측 페르소나 -->
+  <div class="card" style="position:absolute; top:290px; left:64px; width:540px; padding:24px;">
+    <div style="font-size:14px; font-weight:700; color:var(--woori-blue); margin-bottom:10px;">📊 마이데이터</div>
+    <div class="divider-dotted"></div>
+    <table style="width:100%; font-size:13px; margin-top:6px;">
+      <tr><td style="padding:7px 0; color:var(--gray-500); width:42%;">나이</td><td style="font-weight:700; color:var(--gray-900);">28세 · 직장 3년차</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">월 수입</td><td style="font-weight:700; color:var(--gray-900);">2,650,000원</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">신용대출</td><td style="font-weight:700; color:var(--gray-900);">30,000,000원 (월 30만)</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">카드 결제 예정</td><td style="font-weight:700; color:var(--gray-900);">6/5 · 423,500원</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">자동이체 합계</td><td style="font-weight:700; color:var(--gray-900);">월 1,405,000원</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">여유자금</td><td style="font-weight:700; color:var(--woori-blue);">월 300,000원</td></tr>
+      <tr><td style="padding:7px 0; color:var(--gray-500);">투자 예정</td><td style="font-weight:700; color:var(--red);">300,000원 (여유자금 100%)</td></tr>
+    </table>
+  </div>
+
+  <!-- 우측 -->
+  <div style="position:absolute; top:160px; right:64px; width:580px;">
+    <div style="background:#1f2937; border:3px solid var(--woori-blue); border-radius:14px;
+                height:400px; display:flex; align-items:center; justify-content:center;
+                position:relative;">
+      <div style="width:100px; height:100px; border-radius:50%; background:var(--woori-blue);
+                  display:flex; align-items:center; justify-content:center;
+                  font-size:36px; color:white;">▶</div>
+      <div style="position:absolute; bottom:14px; left:0; right:0; text-align:center;
+                  font-size:12px; color:rgba(255,255,255,0.6);">
+        [ 이혜원 시나리오 영상 — 약 60초 ]
+      </div>
+    </div>
+    <div style="margin-top:14px; background:var(--woori-blue-lite); border:1px solid var(--woori-blue);
+                border-radius:12px; padding:14px;">
+      <div style="font-size:12px; font-weight:700; color:var(--woori-blue); margin-bottom:4px;">
+        ✅ 예상 결과
+      </div>
+      <div style="font-size:13px; color:var(--gray-700);">
+        자동이체·카드 결제 인용 → 손실 시나리오 노출 → 본인 결정 (정보 충분히 받은 후)
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 13 — 기술 아키텍처 (가이드2 패턴)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="13">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">13<div class="line"></div></div>
+
+  <h1 class="headline" style="top:130px; left:64px; font-size:42px; line-height:1.3; width:520px;">
+    기술과 신뢰를<br>
+    바탕으로,<br>
+    <span class="accent">우리</span>가 만듭니다.
+  </h1>
+
+  <div class="underline" style="position:absolute; top:360px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:380px; left:64px; width:500px;">
+    데모는 시뮬레이션이지만,<br>
+    실제 우리은행 인프라 위에 바로 얹는 구조입니다.<br>
+    신규 인프라 투자 부담 ↓ · 기존 자산 활용 ↑
+  </div>
+
+  <!-- 좌하단 캐릭터 -->
+  <div class="characters" style="bottom:0; left:0; width:540px;">
+    <img src="assets/characters_4.png" style="width:100%; opacity:0.9;">
+  </div>
+
+  <!-- 우측 2x2 카드 -->
+  <div style="position:absolute; top:130px; right:64px; width:560px;">
+    <div style="font-size:14px; font-weight:700; color:var(--gray-900); margin-bottom:6px; display:flex; align-items:center; gap:10px;">
+      WON AI 뱅커의 기술 스택
+      <div style="flex:1; height:1px; background:var(--gray-200);"></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;">
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box blue">🧠</div>
+        <div style="font-size:14px; font-weight:700; color:var(--woori-blue); margin-top:14px;">마이데이터 연동</div>
+        <div style="font-size:10px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          계좌·자동이체·카드·대출·재무목표<br>실제 우리은행 인프라 위
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">실시간 자동 갱신</div>
+        <div class="check">DSR·재무목표 자동 계산</div>
+        <div class="check">오픈뱅킹 확장 가능</div>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box green">🎙</div>
+        <div style="font-size:14px; font-weight:700; color:var(--green); margin-top:14px;">음성 안내 (TTS)</div>
+        <div style="font-size:10px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          Qwen3-TTS CustomVoice "sohee"<br>한국 여성 화자 + Web Speech
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">mp3 사전 캐시 + 단어 하이라이트</div>
+        <div class="check">정지·재생 통제권</div>
+        <div class="check">발음 최적화</div>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box purple">⚙</div>
+        <div style="font-size:14px; font-weight:700; color:var(--purple); margin-top:14px;">프론트엔드</div>
+        <div style="font-size:10px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          React 19 + Vite 8 SPA<br>GitHub Pages 자동 배포
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">모바일 폰 프레임 390×844</div>
+        <div class="check">페이지 전환 0ms</div>
+        <div class="check">오프라인 캐시</div>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div class="icon-box red">🛡</div>
+        <div style="font-size:14px; font-weight:700; color:var(--red); margin-top:14px;">AI 경고 룰엔진</div>
+        <div style="font-size:10px; color:var(--gray-500); margin-top:6px; line-height:1.6;">
+          펀드 + 사용자 데이터 결합<br>3단계 경고 자동 생성
+        </div>
+        <div class="divider-dotted"></div>
+        <div class="check">DSR·과소비·재무목표 영향</div>
+        <div class="check">딥페이크 송금 차단 확장</div>
+        <div class="check">LLM 연동 로드맵</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 14 — 사업화 로드맵 (가이드3 패턴)
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="14">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">14<div class="line"></div></div>
+
+  <h1 class="headline" style="top:120px; left:64px; font-size:42px; line-height:1.3; width:560px;">
+    사회적 가치 ＋<br>
+    <span class="accent">사업화 로드맵</span>
+  </h1>
+
+  <div class="underline" style="position:absolute; top:300px; left:64px;"></div>
+
+  <div class="lead-text" style="position:absolute; top:320px; left:64px; width:540px;">
+    금감원 2026 "따뜻한 금융" 정책과 방향성 일치.<br>
+    우리은행이 선도 모델이 되면 전 금융권<br>
+    표준 제안까지 자연스럽게 확장됩니다.
+  </div>
+
+  <!-- 좌하단 캐릭터 -->
+  <div class="characters" style="bottom:40px; left:0; width:580px;">
+    <img src="assets/characters_3.png" style="width:100%; opacity:0.9;">
+  </div>
+
+  <!-- 우측 1x4 로드맵 -->
+  <div style="position:absolute; top:120px; right:64px; width:560px;">
+    <div style="font-size:14px; font-weight:700; color:var(--gray-900); margin-bottom:6px; display:flex; align-items:center; gap:10px;">
+      ● 4단계 사업화 로드맵
+      <div style="flex:1; height:1px; background:var(--gray-200);"></div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle blue">🚀</div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="background:var(--woori-blue); color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px;">NOW</span>
+            <span style="font-size:15px; font-weight:700; color:var(--gray-900);">WON AI 뱅커 v1</span>
+          </div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:5px;">
+            펀드 가입 플로우 · 이혜원·김영자 페르소나 토글 시연
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--woori-blue);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle red">🛡</div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="background:var(--red); color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px;">+3M</span>
+            <span style="font-size:15px; font-weight:700; color:var(--gray-900);">시니어 사기 차단 확장</span>
+          </div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:5px;">
+            딥페이크 송금 직전 차단 · 가족 위임 인증 도입
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--red);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle green">🏢</div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="background:var(--green); color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px;">+6M</span>
+            <span style="font-size:15px; font-weight:700; color:var(--gray-900);">시니어플러스 통합</span>
+          </div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:5px;">
+            물리 행원 + AI 행원 동일 컨텍스트 공유 · 옴니채널
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--green);">›</div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px;">
+        <div class="icon-circle purple">🌐</div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="background:var(--purple); color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px;">+12M</span>
+            <span style="font-size:15px; font-weight:700; color:var(--gray-900);">전 금융권 표준 제안</span>
+          </div>
+          <div style="font-size:11px; color:var(--gray-500); margin-top:5px;">
+            금감원 가이드라인 반영 모델 · 우리은행 선도
+          </div>
+        </div>
+        <div class="arrow-right" style="color:var(--purple);">›</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+SLIDE 15 — 마무리
+════════════════════════════════════════════════ -->
+<section class="slide" data-slide="15">
+  <div class="header-logo"><div class="mark"></div><div class="name">우리은행</div></div>
+  <div class="page-no">15<div class="line"></div></div>
+
+  <div style="position:absolute; top:230px; left:0; right:0; text-align:center;">
+    <div style="font-size:68px; font-weight:900; color:var(--gray-900); line-height:1.2; letter-spacing:-2px;">
+      권유하지 않습니다.
+    </div>
+    <div style="font-size:68px; font-weight:900; color:var(--woori-blue); line-height:1.2; letter-spacing:-2px; margin-top:10px;">
+      같이 고민합니다.
+    </div>
+  </div>
+
+  <div class="underline" style="position:absolute; top:480px; left:50%; transform:translateX(-50%); width:60px; height:4px;"></div>
+
+  <div style="position:absolute; top:510px; left:0; right:0; text-align:center;
+              font-size:20px; color:var(--gray-500);">
+    옆자리 행원이 사라진 자리에, 우리가 다시 앉습니다.
+  </div>
+
+  <div style="position:absolute; top:600px; left:0; right:0; text-align:center;">
+    <div style="font-size:20px; font-weight:700; color:var(--woori-blue); margin-bottom:8px;">
+      Thank You
+    </div>
+    <div style="font-size:13px; color:var(--gray-500);">
+      WON AI 뱅커 · 팀 [팀명] · Q & A
+    </div>
+  </div>
+
+  <div class="footer">2026.05  |  WOORI BANK</div>
+  <div class="footer-bar">
+    <div style="height:12px;"></div><div style="height:18px;"></div><div style="height:24px;"></div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const pageEl = document.getElementById('page-current');
+  const controls = document.getElementById('controls');
+  let current = 0;
+
+  function show(i){
+    slides.forEach(s => s.classList.remove('active'));
+    slides[i].classList.add('active');
+    pageEl.textContent = i + 1;
+  }
+
+  function next(){ if(current < totalSlides-1){ current++; show(current); } }
+  function prev(){ if(current > 0){ current--; show(current); } }
+  function goto(i){ if(i>=0 && i<totalSlides){ current=i; show(i); } }
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') next();
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp') prev();
+    else if(e.key === 'Home') goto(0);
+    else if(e.key === 'End') goto(totalSlides-1);
+    else if(e.key === 'f' || e.key === 'F'){
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    } else if(e.key >= '1' && e.key <= '9'){
+      goto(parseInt(e.key) - 1);
+    }
+  });
+
+  // 클릭으로도 넘김
+  document.addEventListener('click', e => {
+    if(e.target.closest('.controls') || e.target.closest('.page-indicator')) return;
+    if(e.clientX < window.innerWidth / 2) prev();
+    else next();
+  });
+
+  // 컨트롤 안내 (3초 후 숨김)
+  controls.classList.add('show');
+  setTimeout(() => controls.classList.remove('show'), 3500);
+
+  // 스케일 조정 — 화면에 맞게 stage scale
+  function fitStage(){
+    const stage = document.getElementById('stage');
+    const sx = window.innerWidth / 1280;
+    const sy = window.innerHeight / 720;
+    const s = Math.min(sx, sy);
+    stage.style.transform = `scale(${s})`;
+  }
+  window.addEventListener('resize', fitStage);
+  fitStage();
+</script>
+
+</body>
+</html>
