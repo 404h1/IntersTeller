@@ -62,7 +62,7 @@ export default function Page07_Document({ onClose, onNext }) {
         {/* 주의사항 */}
         <div style={{ background: '#fff5f5', borderRadius: 12, padding: '16px', marginBottom: 24 }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
-            <span style={{ color: '#dc2626', fontSize: 16 }}>⚠</span>
+            <Icon name="warning" size={16} color="#dc2626" />
             <span style={{ fontWeight: 700, fontSize: 15, color: '#dc2626' }}>주의사항</span>
           </div>
           <p style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>
@@ -143,7 +143,7 @@ export default function Page07_Document({ onClose, onNext }) {
         {/* 8. 부적합 안내 */}
         <div style={{ background: '#fff5f5', borderRadius: 12, padding: '14px 16px', marginTop: 20, marginBottom: 16, border: '1px solid #fecaca' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <span style={{ color: '#dc2626', fontSize: 14 }}>🚨</span>
+            <Icon name="warning" size={14} color="#dc2626" />
             <span style={{ fontSize: 13, fontWeight: 700, color: '#dc2626' }}>부적합 가입 안내</span>
           </div>
           <p style={{ fontSize: 12, color: '#666', lineHeight: 1.7 }}>
@@ -167,7 +167,7 @@ export default function Page07_Document({ onClose, onNext }) {
             padding: '12px 16px', fontSize: 13, textAlign: 'center',
             marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           }}>
-            ⚠ 내용을 끝까지 확인해 주세요.
+            <Icon name="warning" size={14} color="#fff" /> 내용을 끝까지 확인해 주세요.
           </div>
         )}
         <button className="btn-primary" onClick={onNext} disabled={!scrolled} style={!scrolled ? { background: '#c0cfe8' } : {}}>

@@ -18,6 +18,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import StatusBar from '../components/StatusBar';
 import { getFundById } from '../data/funds';
 import botImg from '../assets/bot.png';
+import { Icon } from '../components/Icons';
 
 const API_BASE = 'http://localhost:8000';
 const MAX_ATTEMPTS = 3;
@@ -435,11 +436,11 @@ export default function Page08_HappyCall({
   function getPhaseLabel() {
     switch (phase) {
       case 'loading':   return 'AI가 상품 정보를 불러오고 있어요...';
-      case 'briefing':  return isSpeaking ? '🔵 AI가 위험 내용을 안내하고 있어요' : '안내가 끝났습니다. 마이크를 눌러 답변해 주세요.';
-      case 'listening': return '🔴 듣고 있어요... 말씀해 주세요';
-      case 'judging':   return '🔍 답변을 분석하고 있어요...';
-      case 'pass':      return '✅ 완전판매 확인 완료';
-      case 'fail':      return attempt >= MAX_ATTEMPTS ? '⚠️ 음성 인식 3회 실패' : `⚠️ 다시 확인이 필요해요 (${attempt}/${MAX_ATTEMPTS}회)`;
+      case 'briefing':  return isSpeaking ? 'AI가 위험 내용을 안내하고 있어요' : '안내가 끝났습니다. 마이크를 눌러 답변해 주세요.';
+      case 'listening': return '듣고 있어요... 말씀해 주세요';
+      case 'judging':   return '답변을 분석하고 있어요...';
+      case 'pass':      return '완전판매 확인 완료';
+      case 'fail':      return attempt >= MAX_ATTEMPTS ? '음성 인식 3회 실패' : `다시 확인이 필요해요 (${attempt}/${MAX_ATTEMPTS}회)`;
       case 'done':      return '완료되었습니다.';
       default:          return '';
     }
@@ -653,7 +654,7 @@ export default function Page08_HappyCall({
                 transition: 'all 0.2s',
               }}
             >
-              {isRecording ? '⏹' : '🎙'}
+              {isRecording ? <Icon name="stop" size={22} color="#fff" /> : <Icon name="mic" size={22} color="#fff" />}
             </button>
           )}
 

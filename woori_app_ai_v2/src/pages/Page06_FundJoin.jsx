@@ -88,7 +88,7 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
             {/* 가입 직전 최종 점검 카드 */}
             <div style={{ border: '1.5px solid #1b64da', borderRadius: 14, padding: '16px', marginBottom: 24, background: 'linear-gradient(180deg, #f0f7ff 0%, #fff 70%)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-                <span style={{ fontSize: 16 }}>🔍</span>
+                <Icon name="target" size={16} color="#1b64da" />
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#1b64da' }}>가입 전 최종 점검</span>
               </div>
 
