@@ -150,7 +150,7 @@ export default function Page00_Home({ onStart }) {
             
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ marginBottom: 16 }}>
-                <img src={botImg} alt="bot" style={{ width: 64, height: 64, borderRadius: '50%' }} />✨
+                <img src={botImg} alt="bot" style={{ width: 64, height: 64, borderRadius: '50%' }} />
               </div>
               <div style={{ fontSize: 14, color: '#1b64da', fontWeight: 700, marginBottom: 8 }}>우리은행의 새로운 시도</div>
               <h2 style={{ fontSize: 22, fontWeight: 800, color: '#111', lineHeight: 1.4, margin: 0 }}>

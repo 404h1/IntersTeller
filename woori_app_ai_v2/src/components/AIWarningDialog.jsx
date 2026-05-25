@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import botImg from '../assets/bot.png';
+import { Icon } from './Icons';
 
 /**
  * AI 경고 다이얼로그 — 가입 직전, 사용자 자산/펀드 정보 기반으로 3개 경고를 채팅 형태로 던짐.
@@ -23,7 +24,7 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
 
   const warnings = [
     {
-      icon: '💧',
+      icon: 'money-loss',
       title: '유동성 경고',
       message: overFreeFund
         ? `이혜원님 비상금은 ${adv.emergency.toLocaleString()}원으로 추천드렸어요. 지금 입력하신 ${investAmount.toLocaleString()}원은 권장 투자금(${adv.recommended.toLocaleString()}원)을 초과해요. 갑자기 의료비·생활비가 필요할 때 이 펀드는 환매까지 3영업일이 걸려요.`
@@ -31,13 +32,13 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
       question: '예상치 못한 지출이 생겨도 ' + (overFreeFund ? '이 금액을 ' : '') + '3개월 이상 묶어둘 수 있으세요?',
     },
     {
-      icon: '📉',
+      icon: 'chart-down',
       title: '변동성 시뮬레이션',
       message: `최근 3개월 ${fund.return3m}이지만, ${worstYear}에는 ${worstLoss}% 손실 사례가 있어요. 만약 같은 상황이 오면 ${investAmount.toLocaleString()}원이 ${lossAmount.toLocaleString()}원이 됩니다 (-${(investAmount - lossAmount).toLocaleString()}원).`,
       question: '이 손실이 실제로 났을 때 후회하지 않으실 자신 있으세요?',
     },
     {
-      icon: '🎯',
+      icon: 'target',
       title: '집중도 경고',
       message: `이혜원님 월 여유자금 ${adv.freeFund.toLocaleString()}원 중 ${concentrationPct}%를 이 한 펀드에 넣으시는 거예요. ${fund.region === '글로벌' ? '게다가 해외 주식이라 환율 변동까지 추가로 영향을 받아요.' : '한 산업에 집중되면 그 업황 악화 시 분산 효과가 사라져요.'} 분산 투자를 추천드립니다.`,
       question: '그래도 이 펀드 하나에 집중해서 진행하시겠어요?',
@@ -130,7 +131,7 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
                 <BotMessage delay={idx === 0 ? 0.6 : 0}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ fontSize: 18 }}>{w.icon}</span>
+                      <Icon name={w.icon} size={18} color="#dc2626" />
                       <span style={{ fontSize: 14, fontWeight: 700, color: '#dc2626' }}>경고 {idx + 1}. {w.title}</span>
                     </div>
                     <div style={{ fontSize: 13, color: '#333', lineHeight: 1.7, marginBottom: 12 }}>{w.message}</div>
@@ -183,7 +184,7 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
           {answers.length === warnings.length && answers.every(a => a === 'proceed') && (
             <BotMessage delay={0}>
               <div style={{ fontSize: 14, color: '#111', lineHeight: 1.6 }}>
-                ✅ 모든 위험을 확인하셨어요. 가입 절차로 이동할게요.
+                모든 위험을 확인하셨어요. 가입 절차로 이동할게요.
               </div>
             </BotMessage>
           )}

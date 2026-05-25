@@ -83,7 +83,7 @@ export default function VoiceGuide({ script, audio, onClose, onCommand, autoPlay
             {isListening ? (
               <><Icon name="record" size={11} color="#ff3b30" /> 듣고 있어요...</>
             ) : thisIsPlaying ? (
-              <>🔵 음성 안내 중...</>
+              <><Icon name="volume" size={11} color="#1b64da" /> 음성 안내 중...</>
             ) : (
               <>닫아도 음성 이어져요 — <Icon name="volume" size={11} color="#aaa" /> 로 다시 열기</>
             )}
