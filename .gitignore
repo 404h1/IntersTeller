@@ -1,8 +1,10 @@
 .env
-
-# TTS 생성 산출물 (재생성 가능, 용량 큼)
-
-# 모델 캐시
+.DS_Store
+node_modules/
+dist/
+.vite/
+app_outputs*/
 *.pt
 *.bin
+*.wav
 .venv/

@@ -1,0 +1,40 @@
+# ===================================================
+# 우리은행 AI 완전판매 검증 에이전트 — Python 의존성
+# Python 3.11+ 기준 / RTX 5060 Ti 8GB 환경 고려
+# ===================================================
+
+# --- Web Framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+python-multipart==0.0.20        # multipart/form-data (STT 파일 업로드)
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# --- LLM (Gemini) ---
+google-generativeai==0.8.3      # Gemini API (LLM Judge)
+
+# --- STT: faster-whisper ---
+# RTX 5060 Ti 8GB: large-v3 모델 약 3GB VRAM 사용
+# VRAM 부족 시 WHISPER_MODEL=base (CPU fallback 지원)
+faster-whisper==1.1.0
+
+# --- TTS: gTTS (경량, 즉시 동작, 오프라인 불가) ---
+gTTS==2.5.4
+
+# --- RAG: LangChain + ChromaDB ---
+langchain==0.3.14
+langchain-community==0.3.14
+langchain-chroma==0.2.1
+chromadb==0.6.3
+
+# --- HTTP / 유틸 ---
+httpx==0.28.1
+python-dotenv==1.0.1            # .env 파일 로드
+aiofiles==24.1.0                # 비동기 파일 I/O
+
+# ===================================================
+# [주의] Qwen3-TTS (대안 TTS) 사용 시 별도 설치 필요:
+#   pip install torch torchaudio transformers
+#   RTX 5060 Ti 8GB VRAM: Qwen3-TTS 0.6B 모델 적재 가능
+#   tts.py의 주석 처리된 코드 참조
+# ===================================================

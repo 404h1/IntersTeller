@@ -1,0 +1,10 @@
+{
+  "appId": "com.woori.aibanker",
+  "appName": "WON AI Banker",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#ffffff",
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}
