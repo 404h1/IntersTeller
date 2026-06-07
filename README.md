@@ -5,7 +5,7 @@
 **우리은행 X SSAFY · AI-금융소비자보호 아이디어 경진대회**
 
 <p align="center">
-  <a href="https://404h1.github.io/Woori/">
+  <a href="https://404h1.github.io/IntersTeller/">
     <img src="https://img.shields.io/badge/🔗 데모 바로가기-0046C0?style=for-the-badge" alt="Demo"/>
   </a>
 </p>
